@@ -25,6 +25,32 @@ echo "Error: script don't working without .git_myconfig"
 exit 1;
 fi 
 fi 
+# Обробка параметрів та їх кількість
 
-
+case "$#" in
+1) 
+echo "Working with directory: $1"
+if [ -d "$1" ]; then 
+echo "This directory is already exist"
+ if [ ! -z "$(ls -A "$1")" ]; then 
+ echo "This directory contains files or repository"
+ exit 1;
+ else 
+ cd "$1"
+ git init 
+ git config --local user.name "$USER_NAME"
+ git config --local user.email "$USER_EMAIL"
+ git config --local init.defaultBranch "$USER_BRANCH"
+ echo "# $1" > README.md
+fi 
+else 
+mkdir "$1"
+cd "$1"
+git init 
+git config --local user.name "$USER_NAME"
+git config --local user.email "$USER_EMAIL"
+git config --local init.defaultBranch "$USER_BRANCH"
+echo "# $1" > README.md
+fi
+;;
 
