@@ -34,54 +34,39 @@ echo "Script usage guide: 1. The script must be run with one or two parameters (
 ;;
 1) 
 echo "Working with directory: $1"
-   	if [ -d "$1" ]; then 
-   	echo "This directory is already exist"
-     		if [ ! -z "$(ls -A "$1")" ]; then 
+   	if [ -d "$1" ] && [ ! -z "$(ls -A "$1")" ]; then 
      		echo "This directory contains files or repository"
      		exit 1;
-    			else 
-     			cd "$1"
-     			git init 
-     			git config --local user.name "$USER_NAME"
-     			git config --local user.email "$USER_EMAIL"
-     			git config --local init.defaultBranch "$USER_BRANCH"
-     			echo "# $1" > README.md
-    		fi 
-   			else 
-   			mkdir "$1"
+     		fi
+     		if [ ! -d "$1" ]; then 
+   		mkdir "$1"
+   		fi
    			cd "$1"
    			git init 
    			git config --local user.name "$USER_NAME"
    			git config --local user.email "$USER_EMAIL"
    			git config --local init.defaultBranch "$USER_BRANCH"
    			echo "# $1" > README.md
-  		fi
 ;;
 2) 
-  	if [ ! -d "$1" ]; then 
-   	mkdir "$1"
-   	cd "$1"
-   	git init 
-   	git config --local user.name "$USER_NAME"
-   	git config --local user.email "$USER_EMAIL"
-   	git config --local init.defaultBranch "$USER_BRANCH"
-   	echo "# $1" > README.md
-   	git remote add origin "$2"
-     		elif [ -z "$(ls -A "$1")" ]; then
+if [ -d "$1/.git" ]; then
+cd "$1"
+git remote add origin "$2"
+	elif [ -d "$1" ] && [ ! -z "$(ls -A "$1")" ]; then 
+  	echo "Error: existing files are not a repository"
+  	exit 1;
+     		else
+     		if [ ! -d "$1" ]; then
+     		mkdir "$1"
+     		fi
      		cd "$1"
      		git init 
-     		git config --local user.name "$USER_NAME"
-     		git config --local user.email "$USER_EMAIL"
-     		git config --local init.defaultBranch "$USER_BRANCH"
+        	git config --local user.name "$USER_NAME"
+        	git config --local user.email "$USER_EMAIL"
+ 		git config --local init.defaultBranch "$USER_BRANCH"
      		echo "# $1" > README.md
      		git remote add origin "$2"
-       			elif [ -d "$1/.git" ]; then
-       			cd "$1"
-       			git remote add origin "$2"
-     				else 
-     				echo "Error: existing files are not a repository"
-     				exit 1; 
-     	fi
+     		fi 
 ;;
 *) 
 echo "Error: an unexpected number of parameters was passed"
