@@ -20,8 +20,8 @@ echo "The $DIR is empty"
 exit 1;
 fi 
 
-echo "CLANG-FORMAT 17 VERSION"
-clang-format-17 -i $FILES 
+echo "CLANG-FORMAT 22 VERSION"
+clang-format-22 -i $FILES 
 if [ $? -eq 0 ]; then
 echo "The project has been formatted"
 else 
