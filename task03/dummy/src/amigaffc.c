@@ -17,13 +17,11 @@
  * Functions for accessing Amiga-FFS structures.
  */
 
-
 /* Insert a header block bh into the directory dir
  * caller must hold AFFS_DIR->i_hash_lock!
  */
 
-int
-affs_insert_hash(struct inode *dir, struct buffer_head *bh)
+int affs_insert_hash(struct inode *dir, struct buffer_head *bh)
 {
 	struct super_block *sb = dir->i_sb;
 	struct buffer_head *dir_bh;
@@ -31,7 +29,8 @@ affs_insert_hash(struct inode *dir, struct buffer_head *bh)
 	int offset;
 
 	ino = bh->b_blocknr;
-	offset = affs_hash_name(sb, AFFS_TAIL(sb, bh)->name + 1, AFFS_TAIL(sb, bh)->name[0]);
+	offset = affs_hash_name(sb, AFFS_TAIL(sb, bh)->name + 1,
+				AFFS_TAIL(sb, bh)->name[0]);
 
 	pr_debug("%s(dir=%llu, ino=%d)\n", __func__, dir->i_ino, ino);
 
@@ -71,8 +70,7 @@ affs_insert_hash(struct inode *dir, struct buffer_head *bh)
  * caller must hold AFFS_DIR->i_hash_lock!
  */
 
-int
-affs_remove_hash(struct inode *dir, struct buffer_head *rem_bh)
+int affs_remove_hash(struct inode *dir, struct buffer_head *rem_bh)
 {
 	struct super_block *sb;
 	struct buffer_head *bh;
@@ -82,7 +80,8 @@ affs_remove_hash(struct inode *dir, struct buffer_head *rem_bh)
 
 	sb = dir->i_sb;
 	rem_ino = rem_bh->b_blocknr;
-	offset = affs_hash_name(sb, AFFS_TAIL(sb, rem_bh)->name+1, AFFS_TAIL(sb, rem_bh)->name[0]);
+	offset = affs_hash_name(sb, AFFS_TAIL(sb, rem_bh)->name + 1,
+				AFFS_TAIL(sb, rem_bh)->name[0]);
 	pr_debug("%s(dir=%llu, ino=%d, hashval=%d)\n", __func__, dir->i_ino,
 		 rem_ino, offset);
 
@@ -121,12 +120,12 @@ affs_remove_hash(struct inode *dir, struct buffer_head *rem_bh)
 	return retval;
 }
 
-static void
-affs_fix_dcache(struct inode *inode, u32 entry_ino)
+static void affs_fix_dcache(struct inode *inode, u32 entry_ino)
 {
 	struct dentry *dentry;
 	spin_lock(&inode->i_lock);
-	for_each_alias(dentry, inode) {
+	for_each_alias(dentry, inode)
+	{
 		if (entry_ino == (u32)(long)dentry->d_fsdata) {
 			dentry->d_fsdata = (void *)(unsigned long)inode->i_ino;
 			break;
@@ -135,11 +134,9 @@ affs_fix_dcache(struct inode *inode, u32 entry_ino)
 	spin_unlock(&inode->i_lock);
 }
 
-
 /* Remove header from link chain */
 
-static int
-affs_remove_link(struct dentry *dentry)
+static int affs_remove_link(struct dentry *dentry)
 {
 	struct inode *dir, *inode = d_inode(dentry);
 	struct super_block *sb = inode->i_sb;
@@ -157,13 +154,14 @@ affs_remove_link(struct dentry *dentry)
 	if (inode->i_ino == link_ino) {
 		/* we can't remove the head of the link, as its blocknr is still used as ino,
 		 * so we remove the block of the first link instead.
-		 */ 
+		 */
 		link_ino = be32_to_cpu(AFFS_TAIL(sb, bh)->link_chain);
 		link_bh = affs_bread(sb, link_ino);
 		if (!link_bh)
 			goto done;
 
-		dir = affs_iget(sb, be32_to_cpu(AFFS_TAIL(sb, link_bh)->parent));
+		dir = affs_iget(sb,
+				be32_to_cpu(AFFS_TAIL(sb, link_bh)->parent));
 		if (IS_ERR(dir)) {
 			retval = PTR_ERR(dir);
 			goto done;
@@ -182,7 +180,8 @@ affs_remove_link(struct dentry *dentry)
 		}
 		mark_buffer_dirty(link_bh);
 
-		memcpy(AFFS_TAIL(sb, bh)->name, AFFS_TAIL(sb, link_bh)->name, 32);
+		memcpy(AFFS_TAIL(sb, bh)->name, AFFS_TAIL(sb, link_bh)->name,
+		       32);
 		retval = affs_insert_hash(dir, bh);
 		if (retval) {
 			affs_unlock_dir(dir);
@@ -229,9 +228,7 @@ done:
 	return retval;
 }
 
-
-static int
-affs_empty_dir(struct inode *inode)
+static int affs_empty_dir(struct inode *inode)
 {
 	struct super_block *sb = inode->i_sb;
 	struct buffer_head *bh;
@@ -253,7 +250,6 @@ done:
 	return retval;
 }
 
-
 /* Remove a filesystem object. If the object to be removed has
  * links to it, one of the links must be changed to inherit
  * the file or directory. As above, any inode will do.
@@ -263,8 +259,7 @@ done:
  * an error, else 0 if the inode is to be deleted or 1 if not.
  */
 
-int
-affs_remove_header(struct dentry *dentry)
+int affs_remove_header(struct dentry *dentry)
 {
 	struct super_block *sb;
 	struct inode *inode, *dir;
@@ -335,8 +330,7 @@ done_unlock:
    (which lets us calculate the block size).
    Returns non-zero if the block is not consistent. */
 
-u32
-affs_checksum_block(struct super_block *sb, struct buffer_head *bh)
+u32 affs_checksum_block(struct super_block *sb, struct buffer_head *bh)
 {
 	__be32 *ptr = (__be32 *)bh->b_data;
 	u32 sum;
@@ -353,8 +347,7 @@ affs_checksum_block(struct super_block *sb, struct buffer_head *bh)
  * at the indicated position.
  */
 
-void
-affs_fix_checksum(struct super_block *sb, struct buffer_head *bh)
+void affs_fix_checksum(struct super_block *sb, struct buffer_head *bh)
 {
 	int cnt = sb->s_blocksize / sizeof(__be32);
 	__be32 *ptr = (__be32 *)bh->b_data;
@@ -368,27 +361,25 @@ affs_fix_checksum(struct super_block *sb, struct buffer_head *bh)
 	*checksumptr = cpu_to_be32(-checksum);
 }
 
-void
-affs_secs_to_datestamp(time64_t secs, struct affs_date *ds)
+void affs_secs_to_datestamp(time64_t secs, struct affs_date *ds)
 {
-	u32	 days;
-	u32	 minute;
-	s32	 rem;
+	u32 days;
+	u32 minute;
+	s32 rem;
 
 	secs -= sys_tz.tz_minuteswest * 60 + AFFS_EPOCH_DELTA;
 	if (secs < 0)
 		secs = 0;
-	days    = div_s64_rem(secs, 86400, &rem);
-	minute  = rem / 60;
-	rem    -= minute * 60;
+	days = div_s64_rem(secs, 86400, &rem);
+	minute = rem / 60;
+	rem -= minute * 60;
 
 	ds->days = cpu_to_be32(days);
 	ds->mins = cpu_to_be32(minute);
 	ds->ticks = cpu_to_be32(rem * 50);
 }
 
-umode_t
-affs_prot_to_mode(u32 prot)
+umode_t affs_prot_to_mode(u32 prot)
 {
 	umode_t mode = 0;
 
@@ -414,8 +405,7 @@ affs_prot_to_mode(u32 prot)
 	return mode;
 }
 
-void
-affs_mode_to_prot(struct inode *inode)
+void affs_mode_to_prot(struct inode *inode)
 {
 	u32 prot = AFFS_I(inode)->i_protect;
 	umode_t mode = inode->i_mode;
@@ -432,12 +422,10 @@ affs_mode_to_prot(struct inode *inode)
 	 * delete-allow bit if any of the other bits in the same user class
 	 * (group/other) are used.
 	 */
-	prot &= ~(FIBF_NOEXECUTE | FIBF_NOREAD
-		  | FIBF_NOWRITE | FIBF_NODELETE
-		  | FIBF_GRP_EXECUTE | FIBF_GRP_READ
-		  | FIBF_GRP_WRITE   | FIBF_GRP_DELETE
-		  | FIBF_OTR_EXECUTE | FIBF_OTR_READ
-		  | FIBF_OTR_WRITE   | FIBF_OTR_DELETE);
+	prot &= ~(FIBF_NOEXECUTE | FIBF_NOREAD | FIBF_NOWRITE | FIBF_NODELETE |
+		  FIBF_GRP_EXECUTE | FIBF_GRP_READ | FIBF_GRP_WRITE |
+		  FIBF_GRP_DELETE | FIBF_OTR_EXECUTE | FIBF_OTR_READ |
+		  FIBF_OTR_WRITE | FIBF_OTR_DELETE);
 
 	/* Classic single-user AmigaOS flags. These are inverted. */
 	if (!(mode & 0100))
@@ -469,8 +457,8 @@ affs_mode_to_prot(struct inode *inode)
 	AFFS_I(inode)->i_protect = prot;
 }
 
-void
-affs_error(struct super_block *sb, const char *function, const char *fmt, ...)
+void affs_error(struct super_block *sb, const char *function, const char *fmt,
+		...)
 {
 	struct va_format vaf;
 	va_list args;
@@ -485,8 +473,8 @@ affs_error(struct super_block *sb, const char *function, const char *fmt, ...)
 	va_end(args);
 }
 
-void
-affs_warning(struct super_block *sb, const char *function, const char *fmt, ...)
+void affs_warning(struct super_block *sb, const char *function, const char *fmt,
+		  ...)
 {
 	struct va_format vaf;
 	va_list args;
@@ -498,18 +486,16 @@ affs_warning(struct super_block *sb, const char *function, const char *fmt, ...)
 	va_end(args);
 }
 
-bool
-affs_nofilenametruncate(const struct dentry *dentry)
+bool affs_nofilenametruncate(const struct dentry *dentry)
 {
 	return affs_test_opt(AFFS_SB(dentry->d_sb)->s_flags, SF_NO_TRUNCATE);
 }
 
 /* Check if the name is valid for a affs object. */
 
-int
-affs_check_name(const unsigned char *name, int len, bool notruncate)
+int affs_check_name(const unsigned char *name, int len, bool notruncate)
 {
-	int	 i;
+	int i;
 
 	if (len > AFFSNAMEMAX) {
 		if (notruncate)
@@ -517,8 +503,8 @@ affs_check_name(const unsigned char *name, int len, bool notruncate)
 		len = AFFSNAMEMAX;
 	}
 	for (i = 0; i < len; i++) {
-		if (name[i] < ' ' || name[i] == ':'
-		    || (name[i] > 0x7e && name[i] < 0xa0))
+		if (name[i] < ' ' || name[i] == ':' ||
+		    (name[i] > 0x7e && name[i] < 0xa0))
 			return -EINVAL;
 	}
 
@@ -532,8 +518,7 @@ affs_check_name(const unsigned char *name, int len, bool notruncate)
  *       affs_check_name()!
  */
 
-int
-affs_copy_name(unsigned char *bstr, struct dentry *dentry)
+int affs_copy_name(unsigned char *bstr, struct dentry *dentry)
 {
 	u32 len = min(dentry->d_name.len, AFFSNAMEMAX);
 

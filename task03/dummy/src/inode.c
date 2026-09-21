@@ -17,14 +17,14 @@
 
 struct inode *affs_iget(struct super_block *sb, unsigned long ino)
 {
-	struct affs_sb_info	*sbi = AFFS_SB(sb);
-	struct buffer_head	*bh;
-	struct affs_tail	*tail;
-	struct inode		*inode;
-	u32			 block;
-	u32			 size;
-	u32			 prot;
-	u16			 id;
+	struct affs_sb_info *sbi = AFFS_SB(sb);
+	struct buffer_head *bh;
+	struct affs_tail *tail;
+	struct inode *inode;
+	u32 block;
+	u32 size;
+	u32 prot;
+	u16 id;
 
 	inode = iget_locked(sb, ino);
 	if (!inode)
@@ -40,10 +40,11 @@ struct inode *affs_iget(struct super_block *sb, unsigned long ino)
 		affs_warning(sb, "read_inode", "Cannot read block %d", block);
 		goto bad_inode;
 	}
-	if (affs_checksum_block(sb, bh) || be32_to_cpu(AFFS_HEAD(bh)->ptype) != T_SHORT) {
-		affs_warning(sb,"read_inode",
-			   "Checksum or type (ptype=%d) error on inode %d",
-			   AFFS_HEAD(bh)->ptype, block);
+	if (affs_checksum_block(sb, bh) ||
+	    be32_to_cpu(AFFS_HEAD(bh)->ptype) != T_SHORT) {
+		affs_warning(sb, "read_inode",
+			     "Checksum or type (ptype=%d) error on inode %d",
+			     AFFS_HEAD(bh)->ptype, block);
 		goto bad_inode;
 	}
 
@@ -128,15 +129,17 @@ struct inode *affs_iget(struct super_block *sb, unsigned long ino)
 		inode->i_mode |= S_IFREG;
 		AFFS_I(inode)->mmu_private = inode->i_size = size;
 		if (inode->i_size) {
-			AFFS_I(inode)->i_blkcnt = (size - 1) /
-					       sbi->s_data_blksize + 1;
-			AFFS_I(inode)->i_extcnt = (AFFS_I(inode)->i_blkcnt - 1) /
-					       sbi->s_hashsize + 1;
+			AFFS_I(inode)->i_blkcnt =
+				(size - 1) / sbi->s_data_blksize + 1;
+			AFFS_I(inode)->i_extcnt = (AFFS_I(inode)->i_blkcnt -
+						   1) / sbi->s_hashsize +
+						  1;
 		}
 		if (tail->link_chain)
 			set_nlink(inode, 2);
 		inode->i_mapping->a_ops = affs_test_opt(sbi->s_flags, SF_OFS) ?
-					  &affs_aops_ofs : &affs_aops;
+						  &affs_aops_ofs :
+						  &affs_aops;
 		inode->i_op = &affs_file_inode_operations;
 		inode->i_fop = &affs_file_operations;
 		break;
@@ -149,9 +152,22 @@ struct inode *affs_iget(struct super_block *sb, unsigned long ino)
 		break;
 	}
 
-	inode_set_mtime(inode,
-			inode_set_atime(inode, inode_set_ctime(inode, (be32_to_cpu(tail->change.days) * 86400LL + be32_to_cpu(tail->change.mins) * 60 + be32_to_cpu(tail->change.ticks) / 50 + AFFS_EPOCH_DELTA) + sys_tz.tz_minuteswest * 60, 0).tv_sec, 0).tv_sec,
-			0);
+	inode_set_mtime(
+		inode,
+		inode_set_atime(
+			inode,
+			inode_set_ctime(
+				inode,
+				(be32_to_cpu(tail->change.days) * 86400LL +
+				 be32_to_cpu(tail->change.mins) * 60 +
+				 be32_to_cpu(tail->change.ticks) / 50 +
+				 AFFS_EPOCH_DELTA) +
+					sys_tz.tz_minuteswest * 60,
+				0)
+				.tv_sec,
+			0)
+			.tv_sec,
+		0);
 	affs_brelse(bh);
 	unlock_new_inode(inode);
 	return inode;
@@ -162,14 +178,13 @@ bad_inode:
 	return ERR_PTR(-EIO);
 }
 
-int
-affs_write_inode(struct inode *inode, struct writeback_control *wbc)
+int affs_write_inode(struct inode *inode, struct writeback_control *wbc)
 {
-	struct super_block	*sb = inode->i_sb;
-	struct buffer_head	*bh;
-	struct affs_tail	*tail;
-	uid_t			 uid;
-	gid_t			 gid;
+	struct super_block *sb = inode->i_sb;
+	struct buffer_head *bh;
+	struct affs_tail *tail;
+	uid_t uid;
+	gid_t gid;
 
 	pr_debug("write_inode(%llu)\n", inode->i_ino);
 
@@ -178,7 +193,8 @@ affs_write_inode(struct inode *inode, struct writeback_control *wbc)
 		return 0;
 	bh = affs_bread(sb, inode->i_ino);
 	if (!bh) {
-		affs_error(sb, "write_inode", "Cannot read block %llu", inode->i_ino);
+		affs_error(sb, "write_inode", "Cannot read block %llu",
+			   inode->i_ino);
 		return -EIO;
 	}
 	tail = AFFS_TAIL(sb, bh);
@@ -212,8 +228,8 @@ affs_write_inode(struct inode *inode, struct writeback_control *wbc)
 	return 0;
 }
 
-int
-affs_setattr(struct mnt_idmap *idmap, struct dentry *dentry, struct iattr *attr)
+int affs_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
+		 struct iattr *attr)
 {
 	struct inode *inode = d_inode(dentry);
 	int error;
@@ -225,9 +241,9 @@ affs_setattr(struct mnt_idmap *idmap, struct dentry *dentry, struct iattr *attr)
 		goto out;
 
 	if (((attr->ia_valid & ATTR_UID) &&
-	      affs_test_opt(AFFS_SB(inode->i_sb)->s_flags, SF_SETUID)) ||
+	     affs_test_opt(AFFS_SB(inode->i_sb)->s_flags, SF_SETUID)) ||
 	    ((attr->ia_valid & ATTR_GID) &&
-	      affs_test_opt(AFFS_SB(inode->i_sb)->s_flags, SF_SETGID)) ||
+	     affs_test_opt(AFFS_SB(inode->i_sb)->s_flags, SF_SETGID)) ||
 	    ((attr->ia_valid & ATTR_MODE) &&
 	     (AFFS_SB(inode->i_sb)->s_flags &
 	      (AFFS_MOUNT_SF_SETMODE | AFFS_MOUNT_SF_IMMUTABLE)))) {
@@ -255,12 +271,11 @@ out:
 	return error;
 }
 
-void
-affs_evict_inode(struct inode *inode)
+void affs_evict_inode(struct inode *inode)
 {
 	unsigned long cache_page;
-	pr_debug("evict_inode(ino=%llu, nlink=%u)\n",
-		 inode->i_ino, inode->i_nlink);
+	pr_debug("evict_inode(ino=%llu, nlink=%u)\n", inode->i_ino,
+		 inode->i_nlink);
 	truncate_inode_pages_final(&inode->i_data);
 
 	if (!inode->i_nlink) {
@@ -285,13 +300,12 @@ affs_evict_inode(struct inode *inode)
 		affs_free_block(inode->i_sb, inode->i_ino);
 }
 
-struct inode *
-affs_new_inode(struct inode *dir)
+struct inode *affs_new_inode(struct inode *dir)
 {
-	struct super_block	*sb = dir->i_sb;
-	struct inode		*inode;
-	u32			 block;
-	struct buffer_head	*bh;
+	struct super_block *sb = dir->i_sb;
+	struct inode *inode;
+	u32 block;
+	struct buffer_head *bh;
 
 	if (!(inode = new_inode(sb)))
 		goto err_inode;
@@ -305,9 +319,9 @@ affs_new_inode(struct inode *dir)
 	mark_buffer_dirty(bh);
 	affs_brelse(bh);
 
-	inode->i_uid     = current_fsuid();
-	inode->i_gid     = current_fsgid();
-	inode->i_ino     = block;
+	inode->i_uid = current_fsuid();
+	inode->i_gid = current_fsgid();
+	inode->i_ino = block;
 	set_nlink(inode, 1);
 	simple_inode_init_ts(inode);
 	atomic_set(&AFFS_I(inode)->i_opencnt, 0);
@@ -342,8 +356,8 @@ err_inode:
  * and insert it into the hash table.
  */
 
-int
-affs_add_entry(struct inode *dir, struct inode *inode, struct dentry *dentry, s32 type)
+int affs_add_entry(struct inode *dir, struct inode *inode,
+		   struct dentry *dentry, s32 type)
 {
 	struct super_block *sb = dir->i_sb;
 	struct buffer_head *inode_bh = NULL;
@@ -385,7 +399,7 @@ affs_add_entry(struct inode *dir, struct inode *inode, struct dentry *dentry, s3
 
 	if (inode_bh) {
 		__be32 chain;
-	       	chain = AFFS_TAIL(sb, inode_bh)->link_chain;
+		chain = AFFS_TAIL(sb, inode_bh)->link_chain;
 		AFFS_TAIL(sb, bh)->original = cpu_to_be32(inode->i_ino);
 		AFFS_TAIL(sb, bh)->link_chain = chain;
 		AFFS_TAIL(sb, inode_bh)->link_chain = cpu_to_be32(block);

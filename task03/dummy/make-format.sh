@@ -20,18 +20,10 @@ echo "The $DIR is empty"
 exit 1;
 fi 
 
-echo "==== CLANG-FORMAT 17 VERSION ===="
-clang-format-17 --dry-run --Werror $FILES > /dev/null 2>&1
+echo "CLANG-FORMAT 17 VERSION"
+clang-format-17 -i $FILES 
 if [ $? -eq 0 ]; then
-echo "clang-format-17: The project formatting is correct"
+echo "The project has been formatted"
 else 
-echo "clang-format-17: Formatting errors found"
-fi 
-
-echo "==== CLANG-FORMAT 22 VERSION ===="
-clang-format-22 --dry-run --Werror $FILES > /dev/null 2>&1
-if [ $? -eq 0 ]; then
-echo "clang-format-22: The project formatting is correct"
-else 
-echo "clang-format-22: Formatting errors found"
+echo "Error : The project is not formatted"
 fi 

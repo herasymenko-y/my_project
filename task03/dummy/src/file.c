@@ -21,20 +21,18 @@
 
 static struct buffer_head *affs_get_extblock_slow(struct inode *inode, u32 ext);
 
-static int
-affs_file_open(struct inode *inode, struct file *filp)
+static int affs_file_open(struct inode *inode, struct file *filp)
 {
-	pr_debug("open(%llu,%d)\n",
-		 inode->i_ino, atomic_read(&AFFS_I(inode)->i_opencnt));
+	pr_debug("open(%llu,%d)\n", inode->i_ino,
+		 atomic_read(&AFFS_I(inode)->i_opencnt));
 	atomic_inc(&AFFS_I(inode)->i_opencnt);
 	return 0;
 }
 
-static int
-affs_file_release(struct inode *inode, struct file *filp)
+static int affs_file_release(struct inode *inode, struct file *filp)
 {
-	pr_debug("release(%llu, %d)\n",
-		 inode->i_ino, atomic_read(&AFFS_I(inode)->i_opencnt));
+	pr_debug("release(%llu, %d)\n", inode->i_ino,
+		 atomic_read(&AFFS_I(inode)->i_opencnt));
 
 	if (atomic_dec_and_test(&AFFS_I(inode)->i_opencnt)) {
 		inode_lock(inode);
@@ -47,11 +45,10 @@ affs_file_release(struct inode *inode, struct file *filp)
 	return 0;
 }
 
-static int
-affs_grow_extcache(struct inode *inode, u32 lc_idx)
+static int affs_grow_extcache(struct inode *inode, u32 lc_idx)
 {
-	struct super_block	*sb = inode->i_sb;
-	struct buffer_head	*bh;
+	struct super_block *sb = inode->i_sb;
+	struct buffer_head *bh;
 	u32 lc_max;
 	int i, j, key;
 
@@ -60,7 +57,8 @@ affs_grow_extcache(struct inode *inode, u32 lc_idx)
 		if (!ptr)
 			return -ENOMEM;
 		AFFS_I(inode)->i_lc = (u32 *)ptr;
-		AFFS_I(inode)->i_ac = (struct affs_ext_key *)(ptr + AFFS_CACHE_SIZE / 2);
+		AFFS_I(inode)->i_ac =
+			(struct affs_ext_key *)(ptr + AFFS_CACHE_SIZE / 2);
 	}
 
 	lc_max = AFFS_LC_SIZE << AFFS_I(inode)->i_lc_shift;
@@ -77,7 +75,8 @@ affs_grow_extcache(struct inode *inode, u32 lc_idx)
 
 		/* fix idx and old size to new shift */
 		lc_idx >>= (lc_shift - AFFS_I(inode)->i_lc_shift);
-		AFFS_I(inode)->i_lc_size >>= (lc_shift - AFFS_I(inode)->i_lc_shift);
+		AFFS_I(inode)->i_lc_size >>=
+			(lc_shift - AFFS_I(inode)->i_lc_shift);
 
 		/* first shrink old cache to make more space */
 		off = 1 << (lc_shift - AFFS_I(inode)->i_lc_shift);
@@ -117,8 +116,8 @@ err:
 	return -EIO;
 }
 
-static struct buffer_head *
-affs_alloc_extblock(struct inode *inode, struct buffer_head *bh, u32 ext)
+static struct buffer_head *affs_alloc_extblock(struct inode *inode,
+					       struct buffer_head *bh, u32 ext)
 {
 	struct super_block *sb = inode->i_sb;
 	struct buffer_head *new_bh;
@@ -144,7 +143,8 @@ affs_alloc_extblock(struct inode *inode, struct buffer_head *bh, u32 ext)
 
 	tmp = be32_to_cpu(AFFS_TAIL(sb, bh)->extension);
 	if (tmp)
-		affs_warning(sb, "alloc_ext", "previous extension set (%x)", tmp);
+		affs_warning(sb, "alloc_ext", "previous extension set (%x)",
+			     tmp);
 	AFFS_TAIL(sb, bh)->extension = cpu_to_be32(blocknr);
 	affs_adjust_checksum(bh, blocknr - tmp);
 	mark_buffer_dirty(bh);
@@ -155,8 +155,8 @@ affs_alloc_extblock(struct inode *inode, struct buffer_head *bh, u32 ext)
 	return new_bh;
 }
 
-static inline struct buffer_head *
-affs_get_extblock(struct inode *inode, u32 ext)
+static inline struct buffer_head *affs_get_extblock(struct inode *inode,
+						    u32 ext)
 {
 	/* inline the simplest case: same extended block as last time */
 	struct buffer_head *bh = AFFS_I(inode)->i_ext_bh;
@@ -169,8 +169,7 @@ affs_get_extblock(struct inode *inode, u32 ext)
 	return bh;
 }
 
-static struct buffer_head *
-affs_get_extblock_slow(struct inode *inode, u32 ext)
+static struct buffer_head *affs_get_extblock_slow(struct inode *inode, u32 ext)
 {
 	struct super_block *sb = inode->i_sb;
 	struct buffer_head *bh;
@@ -294,12 +293,12 @@ err_bread:
 	return ERR_PTR(-EIO);
 }
 
-static int
-affs_get_block(struct inode *inode, sector_t block, struct buffer_head *bh_result, int create)
+static int affs_get_block(struct inode *inode, sector_t block,
+			  struct buffer_head *bh_result, int create)
 {
-	struct super_block	*sb = inode->i_sb;
-	struct buffer_head	*ext_bh;
-	u32			 ext;
+	struct super_block *sb = inode->i_sb;
+	struct buffer_head *ext_bh;
+	u32 ext;
 
 	pr_debug("%s(%llu, %llu)\n", __func__, inode->i_ino,
 		 (unsigned long long)block);
@@ -320,7 +319,8 @@ affs_get_block(struct inode *inode, sector_t block, struct buffer_head *bh_resul
 	ext_bh = affs_get_extblock(inode, ext);
 	if (IS_ERR(ext_bh))
 		goto err_ext;
-	map_bh(bh_result, sb, (sector_t)be32_to_cpu(AFFS_BLOCK(sb, ext_bh, block)));
+	map_bh(bh_result, sb,
+	       (sector_t)be32_to_cpu(AFFS_BLOCK(sb, ext_bh, block)));
 
 	if (create) {
 		u32 blocknr = affs_alloc_block(inode, ext_bh->b_blocknr);
@@ -337,14 +337,17 @@ affs_get_block(struct inode *inode, sector_t block, struct buffer_head *bh_resul
 				     (unsigned long long)bh_result->b_blocknr);
 		AFFS_BLOCK(sb, ext_bh, block) = cpu_to_be32(blocknr);
 		AFFS_HEAD(ext_bh)->block_count = cpu_to_be32(block + 1);
-		affs_adjust_checksum(ext_bh, blocknr - bh_result->b_blocknr + 1);
+		affs_adjust_checksum(ext_bh,
+				     blocknr - bh_result->b_blocknr + 1);
 		bh_result->b_blocknr = blocknr;
 
 		if (!block) {
 			/* insert first block into header block */
 			u32 tmp = be32_to_cpu(AFFS_HEAD(ext_bh)->first_data);
 			if (tmp)
-				affs_warning(sb, "get_block", "first block already set (%d)", tmp);
+				affs_warning(sb, "get_block",
+					     "first block already set (%d)",
+					     tmp);
 			AFFS_HEAD(ext_bh)->first_data = cpu_to_be32(blocknr);
 			affs_adjust_checksum(ext_bh, blocknr - tmp);
 		}
@@ -393,8 +396,7 @@ static void affs_write_failed(struct address_space *mapping, loff_t to)
 	}
 }
 
-static ssize_t
-affs_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
+static ssize_t affs_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
 {
 	struct file *file = iocb->ki_filp;
 	struct address_space *mapping = file->f_mapping;
@@ -417,15 +419,14 @@ affs_direct_IO(struct kiocb *iocb, struct iov_iter *iter)
 }
 
 static int affs_write_begin(const struct kiocb *iocb,
-			    struct address_space *mapping,
-			    loff_t pos, unsigned len,
-			    struct folio **foliop, void **fsdata)
+			    struct address_space *mapping, loff_t pos,
+			    unsigned len, struct folio **foliop, void **fsdata)
 {
 	int ret;
 
 	ret = cont_write_begin(iocb, mapping, pos, len, foliop, fsdata,
-				affs_get_block,
-				&AFFS_I(mapping->host)->mmu_private);
+			       affs_get_block,
+			       &AFFS_I(mapping->host)->mmu_private);
 	if (unlikely(ret))
 		affs_write_failed(mapping, pos + len);
 
@@ -453,11 +454,11 @@ static int affs_write_end(const struct kiocb *iocb,
 
 static sector_t _affs_bmap(struct address_space *mapping, sector_t block)
 {
-	return generic_block_bmap(mapping,block,affs_get_block);
+	return generic_block_bmap(mapping, block, affs_get_block);
 }
 
 const struct address_space_operations affs_aops = {
-	.dirty_folio	= block_dirty_folio,
+	.dirty_folio = block_dirty_folio,
 	.invalidate_folio = block_invalidate_folio,
 	.read_folio = affs_read_folio,
 	.writepages = affs_writepages,
@@ -468,8 +469,8 @@ const struct address_space_operations affs_aops = {
 	.bmap = _affs_bmap
 };
 
-static inline struct buffer_head *
-affs_bread_ino(struct inode *inode, int block, int create)
+static inline struct buffer_head *affs_bread_ino(struct inode *inode, int block,
+						 int create)
 {
 	struct buffer_head *bh, tmp_bh;
 	int err;
@@ -487,8 +488,8 @@ affs_bread_ino(struct inode *inode, int block, int create)
 	return ERR_PTR(err);
 }
 
-static inline struct buffer_head *
-affs_getzeroblk_ino(struct inode *inode, int block)
+static inline struct buffer_head *affs_getzeroblk_ino(struct inode *inode,
+						      int block)
 {
 	struct buffer_head *bh, tmp_bh;
 	int err;
@@ -506,8 +507,8 @@ affs_getzeroblk_ino(struct inode *inode, int block)
 	return ERR_PTR(err);
 }
 
-static inline struct buffer_head *
-affs_getemptyblk_ino(struct inode *inode, int block)
+static inline struct buffer_head *affs_getemptyblk_ino(struct inode *inode,
+						       int block)
 {
 	struct buffer_head *bh, tmp_bh;
 	int err;
@@ -557,8 +558,7 @@ static int affs_do_read_folio_ofs(struct folio *folio, size_t to, int create)
 	return 0;
 }
 
-static int
-affs_extent_file_ofs(struct inode *inode, u32 newsize)
+static int affs_extent_file_ofs(struct inode *inode, u32 newsize)
 {
 	struct super_block *sb = inode->i_sb;
 	struct buffer_head *bh, *prev_bh;
@@ -605,13 +605,16 @@ affs_extent_file_ofs(struct inode *inode, u32 newsize)
 		bh->b_state &= ~(1UL << BH_New);
 		mark_buffer_dirty(bh);
 		if (prev_bh) {
-			u32 tmp_next = be32_to_cpu(AFFS_DATA_HEAD(prev_bh)->next);
+			u32 tmp_next =
+				be32_to_cpu(AFFS_DATA_HEAD(prev_bh)->next);
 
 			if (tmp_next)
-				affs_warning(sb, "extent_file_ofs",
-					     "next block already set for %d (%d)",
-					     bidx, tmp_next);
-			AFFS_DATA_HEAD(prev_bh)->next = cpu_to_be32(bh->b_blocknr);
+				affs_warning(
+					sb, "extent_file_ofs",
+					"next block already set for %d (%d)",
+					bidx, tmp_next);
+			AFFS_DATA_HEAD(prev_bh)->next =
+				cpu_to_be32(bh->b_blocknr);
 			affs_adjust_checksum(prev_bh, bh->b_blocknr - tmp_next);
 			mark_buffer_dirty(prev_bh);
 			affs_brelse(prev_bh);
@@ -649,9 +652,9 @@ static int affs_read_folio_ofs(struct file *file, struct folio *folio)
 }
 
 static int affs_write_begin_ofs(const struct kiocb *iocb,
-				struct address_space *mapping,
-				loff_t pos, unsigned len,
-				struct folio **foliop, void **fsdata)
+				struct address_space *mapping, loff_t pos,
+				unsigned len, struct folio **foliop,
+				void **fsdata)
 {
 	struct inode *inode = mapping->host;
 	struct folio *folio;
@@ -671,7 +674,7 @@ static int affs_write_begin_ofs(const struct kiocb *iocb,
 
 	index = pos >> PAGE_SHIFT;
 	folio = __filemap_get_folio(mapping, index, FGP_WRITEBEGIN,
-			mapping_gfp_mask(mapping));
+				    mapping_gfp_mask(mapping));
 	if (IS_ERR(folio))
 		return PTR_ERR(folio);
 	*foliop = folio;
@@ -689,8 +692,8 @@ static int affs_write_begin_ofs(const struct kiocb *iocb,
 }
 
 static int affs_write_end_ofs(const struct kiocb *iocb,
-			      struct address_space *mapping,
-			      loff_t pos, unsigned len, unsigned copied,
+			      struct address_space *mapping, loff_t pos,
+			      unsigned len, unsigned copied,
 			      struct folio *folio, void *fsdata)
 {
 	struct inode *inode = mapping->host;
@@ -757,14 +760,18 @@ static int affs_write_end_ofs(const struct kiocb *iocb,
 			AFFS_DATA_HEAD(bh)->next = 0;
 			bh->b_state &= ~(1UL << BH_New);
 			if (prev_bh) {
-				u32 tmp_next = be32_to_cpu(AFFS_DATA_HEAD(prev_bh)->next);
+				u32 tmp_next = be32_to_cpu(
+					AFFS_DATA_HEAD(prev_bh)->next);
 
 				if (tmp_next)
-					affs_warning(sb, "commit_write_ofs",
-						     "next block already set for %d (%d)",
-						     bidx, tmp_next);
-				AFFS_DATA_HEAD(prev_bh)->next = cpu_to_be32(bh->b_blocknr);
-				affs_adjust_checksum(prev_bh, bh->b_blocknr - tmp_next);
+					affs_warning(
+						sb, "commit_write_ofs",
+						"next block already set for %d (%d)",
+						bidx, tmp_next);
+				AFFS_DATA_HEAD(prev_bh)->next =
+					cpu_to_be32(bh->b_blocknr);
+				affs_adjust_checksum(prev_bh,
+						     bh->b_blocknr - tmp_next);
 				mark_buffer_dirty(prev_bh);
 			}
 		}
@@ -791,14 +798,18 @@ static int affs_write_end_ofs(const struct kiocb *iocb,
 			AFFS_DATA_HEAD(bh)->next = 0;
 			bh->b_state &= ~(1UL << BH_New);
 			if (prev_bh) {
-				u32 tmp_next = be32_to_cpu(AFFS_DATA_HEAD(prev_bh)->next);
+				u32 tmp_next = be32_to_cpu(
+					AFFS_DATA_HEAD(prev_bh)->next);
 
 				if (tmp_next)
-					affs_warning(sb, "commit_write_ofs",
-						     "next block already set for %d (%d)",
-						     bidx, tmp_next);
-				AFFS_DATA_HEAD(prev_bh)->next = cpu_to_be32(bh->b_blocknr);
-				affs_adjust_checksum(prev_bh, bh->b_blocknr - tmp_next);
+					affs_warning(
+						sb, "commit_write_ofs",
+						"next block already set for %d (%d)",
+						bidx, tmp_next);
+				AFFS_DATA_HEAD(prev_bh)->next =
+					cpu_to_be32(bh->b_blocknr);
+				affs_adjust_checksum(prev_bh,
+						     bh->b_blocknr - tmp_next);
 				mark_buffer_dirty(prev_bh);
 			}
 		} else if (be32_to_cpu(AFFS_DATA_HEAD(bh)->size) < tmp)
@@ -838,7 +849,7 @@ err_bh:
 }
 
 const struct address_space_operations affs_aops_ofs = {
-	.dirty_folio	= block_dirty_folio,
+	.dirty_folio = block_dirty_folio,
 	.invalidate_folio = block_invalidate_folio,
 	.read_folio = affs_read_folio_ofs,
 	//.writepages = affs_writepages_ofs,
@@ -849,8 +860,7 @@ const struct address_space_operations affs_aops_ofs = {
 
 /* Free any preallocated blocks. */
 
-void
-affs_free_prealloc(struct inode *inode)
+void affs_free_prealloc(struct inode *inode)
 {
 	struct super_block *sb = inode->i_sb;
 
@@ -864,8 +874,7 @@ affs_free_prealloc(struct inode *inode)
 
 /* Truncate (or enlarge) a file to the requested size. */
 
-void
-affs_truncate(struct inode *inode)
+void affs_truncate(struct inode *inode)
 {
 	struct super_block *sb = inode->i_sb;
 	u32 ext, ext_key;
@@ -880,7 +889,8 @@ affs_truncate(struct inode *inode)
 	last_blk = 0;
 	ext = 0;
 	if (inode->i_size) {
-		last_blk = ((u32)inode->i_size - 1) / AFFS_SB(sb)->s_data_blksize;
+		last_blk =
+			((u32)inode->i_size - 1) / AFFS_SB(sb)->s_data_blksize;
 		ext = last_blk / AFFS_SB(sb)->s_hashsize;
 	}
 
@@ -891,9 +901,11 @@ affs_truncate(struct inode *inode)
 		loff_t isize = inode->i_size;
 		int res;
 
-		res = mapping->a_ops->write_begin(NULL, mapping, isize, 0, &folio, &fsdata);
+		res = mapping->a_ops->write_begin(NULL, mapping, isize, 0,
+						  &folio, &fsdata);
 		if (!res)
-			res = mapping->a_ops->write_end(NULL, mapping, isize, 0, 0, folio, fsdata);
+			res = mapping->a_ops->write_end(NULL, mapping, isize, 0,
+							0, folio, fsdata);
 		else
 			inode->i_size = AFFS_I(inode)->mmu_private;
 		mark_inode_dirty(inode);
@@ -949,12 +961,14 @@ affs_truncate(struct inode *inode)
 		AFFS_I(inode)->i_blkcnt = last_blk + 1;
 		AFFS_I(inode)->i_extcnt = ext + 1;
 		if (affs_test_opt(AFFS_SB(sb)->s_flags, SF_OFS)) {
-			struct buffer_head *bh = affs_bread_ino(inode, last_blk, 0);
+			struct buffer_head *bh =
+				affs_bread_ino(inode, last_blk, 0);
 			u32 tmp;
 			if (IS_ERR(bh)) {
-				affs_warning(sb, "truncate",
-					     "unexpected read error for last block %u (%ld)",
-					     ext, PTR_ERR(bh));
+				affs_warning(
+					sb, "truncate",
+					"unexpected read error for last block %u (%ld)",
+					ext, PTR_ERR(bh));
 				return;
 			}
 			tmp = be32_to_cpu(AFFS_DATA_HEAD(bh)->next);
@@ -975,7 +989,8 @@ affs_truncate(struct inode *inode)
 		if (size > blkcnt - blk)
 			size = blkcnt - blk;
 		for (i = 0; i < size; i++, blk++)
-			affs_free_block(sb, be32_to_cpu(AFFS_BLOCK(sb, ext_bh, i)));
+			affs_free_block(sb,
+					be32_to_cpu(AFFS_BLOCK(sb, ext_bh, i)));
 		affs_free_block(sb, ext_key);
 		ext_key = be32_to_cpu(AFFS_TAIL(sb, ext_bh)->extension);
 		affs_brelse(ext_bh);
@@ -1001,17 +1016,17 @@ int affs_file_fsync(struct file *filp, loff_t start, loff_t end, int datasync)
 	return ret;
 }
 const struct file_operations affs_file_operations = {
-	.llseek		= generic_file_llseek,
-	.read_iter	= generic_file_read_iter,
-	.write_iter	= generic_file_write_iter,
-	.mmap_prepare	= generic_file_mmap_prepare,
-	.open		= affs_file_open,
-	.release	= affs_file_release,
-	.fsync		= affs_file_fsync,
-	.splice_read	= filemap_splice_read,
-	.setlease	= generic_setlease,
+	.llseek = generic_file_llseek,
+	.read_iter = generic_file_read_iter,
+	.write_iter = generic_file_write_iter,
+	.mmap_prepare = generic_file_mmap_prepare,
+	.open = affs_file_open,
+	.release = affs_file_release,
+	.fsync = affs_file_fsync,
+	.splice_read = filemap_splice_read,
+	.setlease = generic_setlease,
 };
 
 const struct inode_operations affs_file_inode_operations = {
-	.setattr	= affs_setattr,
+	.setattr = affs_setattr,
 };

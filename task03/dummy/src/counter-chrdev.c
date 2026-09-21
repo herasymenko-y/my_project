@@ -30,37 +30,29 @@ struct counter_comp_node {
 	void *parent;
 };
 
-#define counter_comp_read_is_equal(a, b) \
-	(a.action_read == b.action_read || \
-	a.device_u8_read == b.device_u8_read || \
-	a.count_u8_read == b.count_u8_read || \
-	a.signal_u8_read == b.signal_u8_read || \
-	a.device_u32_read == b.device_u32_read || \
-	a.count_u32_read == b.count_u32_read || \
-	a.signal_u32_read == b.signal_u32_read || \
-	a.device_u64_read == b.device_u64_read || \
-	a.count_u64_read == b.count_u64_read || \
-	a.signal_u64_read == b.signal_u64_read || \
-	a.signal_array_u32_read == b.signal_array_u32_read || \
-	a.device_array_u64_read == b.device_array_u64_read || \
-	a.count_array_u64_read == b.count_array_u64_read || \
-	a.signal_array_u64_read == b.signal_array_u64_read)
+#define counter_comp_read_is_equal(a, b)                       \
+	(a.action_read == b.action_read ||                     \
+	 a.device_u8_read == b.device_u8_read ||               \
+	 a.count_u8_read == b.count_u8_read ||                 \
+	 a.signal_u8_read == b.signal_u8_read ||               \
+	 a.device_u32_read == b.device_u32_read ||             \
+	 a.count_u32_read == b.count_u32_read ||               \
+	 a.signal_u32_read == b.signal_u32_read ||             \
+	 a.device_u64_read == b.device_u64_read ||             \
+	 a.count_u64_read == b.count_u64_read ||               \
+	 a.signal_u64_read == b.signal_u64_read ||             \
+	 a.signal_array_u32_read == b.signal_array_u32_read || \
+	 a.device_array_u64_read == b.device_array_u64_read || \
+	 a.count_array_u64_read == b.count_array_u64_read ||   \
+	 a.signal_array_u64_read == b.signal_array_u64_read)
 
-#define counter_comp_read_is_set(comp) \
-	(comp.action_read || \
-	comp.device_u8_read || \
-	comp.count_u8_read || \
-	comp.signal_u8_read || \
-	comp.device_u32_read || \
-	comp.count_u32_read || \
-	comp.signal_u32_read || \
-	comp.device_u64_read || \
-	comp.count_u64_read || \
-	comp.signal_u64_read || \
-	comp.signal_array_u32_read || \
-	comp.device_array_u64_read || \
-	comp.count_array_u64_read || \
-	comp.signal_array_u64_read)
+#define counter_comp_read_is_set(comp)                                         \
+	(comp.action_read || comp.device_u8_read || comp.count_u8_read ||      \
+	 comp.signal_u8_read || comp.device_u32_read || comp.count_u32_read || \
+	 comp.signal_u32_read || comp.device_u64_read ||                       \
+	 comp.count_u64_read || comp.signal_u64_read ||                        \
+	 comp.signal_array_u32_read || comp.device_array_u64_read ||           \
+	 comp.count_array_u64_read || comp.signal_array_u64_read)
 
 static ssize_t counter_chrdev_read(struct file *filp, char __user *buf,
 				   size_t len, loff_t *f_ps)
@@ -80,8 +72,9 @@ static ssize_t counter_chrdev_read(struct file *filp, char __user *buf,
 			if (filp->f_flags & O_NONBLOCK)
 				return -EAGAIN;
 
-			err = wait_event_interruptible(counter->events_wait,
-					!kfifo_is_empty(&counter->events) ||
+			err = wait_event_interruptible(
+				counter->events_wait,
+				!kfifo_is_empty(&counter->events) ||
 					!counter->ops);
 			if (err < 0)
 				return err;
@@ -201,8 +194,7 @@ static int counter_enable_events(struct counter_device *const counter)
 	spin_lock_irqsave(&counter->events_list_lock, flags);
 
 	counter_events_list_free(&counter->events_list);
-	list_replace_init(&counter->next_events_list,
-			  &counter->events_list);
+	list_replace_init(&counter->next_events_list, &counter->events_list);
 
 	if (counter->ops->events_configure)
 		err = counter->ops->events_configure(counter);
@@ -341,7 +333,8 @@ static int counter_add_watch(struct counter_device *const counter,
 			return -EINVAL;
 		if (id >= counter->counts[parent].num_synapses)
 			return -EINVAL;
-		id = array_index_nospec(id, counter->counts[parent].num_synapses);
+		id = array_index_nospec(id,
+					counter->counts[parent].num_synapses);
 
 		comp_node.comp.type = COUNTER_COMP_SYNAPSE_ACTION;
 		comp_node.comp.action_read = counter->ops->action_read;
@@ -413,9 +406,8 @@ out_unlock:
 
 static int counter_chrdev_open(struct inode *inode, struct file *filp)
 {
-	struct counter_device *const counter = container_of(inode->i_cdev,
-							    typeof(*counter),
-							    chrdev);
+	struct counter_device *const counter =
+		container_of(inode->i_cdev, typeof(*counter), chrdev);
 
 	get_device(&counter->dev);
 	filp->private_data = counter;
@@ -662,8 +654,8 @@ void counter_push_event(struct counter_device *const counter, const u8 event,
 		ev.watch.component = comp_node->component;
 		ev.status = -counter_get_data(counter, comp_node, &ev.value);
 
-		copied += kfifo_in_spinlocked_noirqsave(&counter->events, &ev,
-							1, &counter->events_in_lock);
+		copied += kfifo_in_spinlocked_noirqsave(
+			&counter->events, &ev, 1, &counter->events_in_lock);
 	}
 
 exit_early:
