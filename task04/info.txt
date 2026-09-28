@@ -1,6 +1,6 @@
 ====  Information about device  ====
- Hostname  : yana-Ubuntu
-Current time : 2026-09-28 18:22:04
+ Hostname  : yana
+Current time : 2026-09-28 23:23:32
 OS : Linux
-Hardware platform : x86_64
+Hardware platform : aarch64
 =============================================
