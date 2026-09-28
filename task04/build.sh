@@ -7,7 +7,7 @@ fi
 FILE="$1"
 BIN_FILE="${FILE%.*}"
 
-aarch64-linux-gnu-gcc "$FILE" -o "$BIN_FILE"
+aarch64-linux-gnu-gcc "$FILE" -static -o "$BIN_FILE"
 
 echo -e "\n Running application: $BIN_FILE"
 ./"$BIN_FILE" info.txt
