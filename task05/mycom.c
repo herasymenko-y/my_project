@@ -10,31 +10,30 @@ volatile sig_atomic_t run = 1;
 
 int uart_setup(const char *port) {
   int serial_port = open(port, O_RDWR | O_NOCTTY);
-
   if (serial_port < 0) {
-    printf("Error1");
+    printf("Error1\n");
     return -1;
   }
 
   struct termios tty;
-
   if (tcgetattr(serial_port, &tty) != 0) {
-    printf("Error2");
+    printf("Error2\n");
     return -1;
   }
 
   tty.c_cflag &= ~PARENB;
+  tty.c_cflag &= ~CSTOPB;
+  tty.c_cflag &= ~CSIZE;
   tty.c_cflag |= CS8;
-  tty.c_cflag |= (CREAD | CLOCAL);
+  tty.c_cflag &= ~CRTSCTS;
+  tty.c_cflag |= CREAD | CLOCAL;
 
-  tty.c_lflag &= ~(ICANON | ECHO | ECHOE | ECHONL);
+  tty.c_lflag &= ~(ICANON | ECHO | ECHOE | ECHONL | ISIG);
+  tty.c_iflag &= ~(IXON | IXOFF | IXANY | IGNBRK | BRKINT | PARMRK | ISTRIP | INLCR | IGNCR | ICRNL);
+  tty.c_oflag &= ~(OPOST | ONLCR);
 
-  tty.c_iflag &= ~(ICRNL | INLCR | IXON | IXOFF | IXANY);
-
-  tty.c_oflag &= ~(OPOST);
-
-  tty.c_cc[VTIME] = 0;
-  tty.c_cc[VMIN] = 1;
+  tty.c_cc[VTIME] = 5; 
+  tty.c_cc[VMIN] = 0;
 
   cfsetispeed(&tty, B115200);
   cfsetospeed(&tty, B115200);
@@ -43,12 +42,14 @@ int uart_setup(const char *port) {
   return serial_port;
 }
 
-void catch_sig(int sig) { run = 0; }
+void catch_sig(int sig) { 
+  (void)sig;
+  run = 0; 
+}
 
 int main(int argc, char *argv[]) {
-
   if (argc < 2) {
-    printf("Error3");
+    printf("Error3\n");
     return -1;
   }
 
@@ -56,7 +57,6 @@ int main(int argc, char *argv[]) {
   signal(SIGTERM, catch_sig);
 
   time_t start = time(NULL);
-
   char file[32];
   sprintf(file, "%ld.log", start);
 
@@ -67,11 +67,9 @@ int main(int argc, char *argv[]) {
   }
 
   int fd = uart_setup(argv[1]);
-
   if (fd < 0) {
     printf("Port access error %s\n", argv[1]);
     fprintf(log_file, "[%ld] Port access error %s\n", time(NULL), argv[1]);
-
     fclose(log_file);
     return -1;
   }
@@ -80,36 +78,47 @@ int main(int argc, char *argv[]) {
   int index = 0;
   char b;
 
+  printf("program starting. waiting for data . . . \n");
+
   while (run) {
     int bytes = read(fd, &b, 1);
-
+    
     if (bytes > 0) {
-      buff[index] = b;
+      buff[index] = b; 
       index++;
 
-      if (index >= sizeof(buff)) {
+      if (index >= (int)sizeof(buff)) {
         index = 0;
         continue;
       }
 
-      if (index >= 2 && buff[index - 2] == '\r' && buff[index - 1] == '\n') {
-        buff[index] = '\0';
-        fprintf(log_file, "[%ld] received %s", time(NULL), buff);
+      if (b == '\r') {
+        buff[index - 1] = '\0'; 
+        
+        fprintf(log_file, "[%ld] received %s\n", time(NULL), buff);
         fflush(log_file);
 
-        for (int i = 0; i < index - 2; i++) {
+        printf("received: %s\n", buff);
 
+        // Змінюємо регістр
+        for (int i = 0; i < index - 1; i++) {
           if (islower(buff[i])) {
             buff[i] = toupper(buff[i]);
           } else if (isupper(buff[i])) {
             buff[i] = tolower(buff[i]);
           }
         }
-        write(fd, buff, index);
+        
+        write(fd, buff, index - 1);
+        
+        write(fd, "\r\n", 2); 
+        
         index = 0;
       }
     }
   }
+  
+  printf("\nend\n");
   close(fd);
   fclose(log_file);
   return 0;
