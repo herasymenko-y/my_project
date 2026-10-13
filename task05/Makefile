@@ -1,8 +1,8 @@
 CC= $(CROSS_COMPILE)gcc
-CFLAGS= -Wextra -Wall
+CFLAGS= -Wextra -Wall -static
 
 
-TARGET_IP = 192.168.0.131
+TARGET_IP = 192.168.1.106
 TARGET_USER = yana
 TARGET_DIR = /home/yana/
 
