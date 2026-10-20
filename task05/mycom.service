@@ -1,5 +1,5 @@
 [Unit] 
-Description=my deamon
+Description=my service
 After=multi-user.target
 
 [Service] 
