@@ -16,6 +16,13 @@ mycom: mycom.c
 	
 format: 
 	clang-format -i mycom.c
+
+install: mycom
+	scp mycom mycom.service $(TARGET_USER)@$(TARGET_IP):$(TARGET_DIR)
+	ssh $(TARGET_USER)@$(TARGET_IP) "sudo mv $(TARGET_DIR)mycom /usr/local/bin/mycom"
+	ssh $(TARGET_USER)@$(TARGET_IP) "sudo mv $(TARGET_DIR)mycom.service /etc/systemd/system/"
+	ssh $(TARGET_USER)@$(TARGET_IP) "sudo systemctl daemon-reload"
+	ssh $(TARGET_USER)@$(TARGET_IP) "sudo systemctl enable mycom.service"          
 	
 deploy: mycom
 	scp mycom $(TARGET_USER)@$(TARGET_IP):$(TARGET_DIR)
