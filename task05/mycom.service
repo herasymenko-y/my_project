@@ -3,7 +3,7 @@ Description=my deamon
 After=multi-user.target
 
 [Service] 
-ExecStart=/etc/systemd/system/mycom.service /dev/ttyAMA0
+ExecStart=/usr/local/bin/mycom /dev/ttyAMA0
 Restart=on-failure
 RestartSec=5
 

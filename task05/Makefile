@@ -7,7 +7,7 @@ TARGET_USER = yana
 TARGET_DIR = /home/yana/
 
 
-.PHONY: all deploy clean format 
+.PHONY: all deploy clean format install
 
 all: mycom 
 
@@ -19,10 +19,10 @@ format:
 
 install: mycom
 	scp mycom mycom.service $(TARGET_USER)@$(TARGET_IP):$(TARGET_DIR)
-	ssh $(TARGET_USER)@$(TARGET_IP) "sudo mv $(TARGET_DIR)mycom /usr/local/bin/mycom"
-	ssh $(TARGET_USER)@$(TARGET_IP) "sudo mv $(TARGET_DIR)mycom.service /etc/systemd/system/"
-	ssh $(TARGET_USER)@$(TARGET_IP) "sudo systemctl daemon-reload"
-	ssh $(TARGET_USER)@$(TARGET_IP) "sudo systemctl enable mycom.service"          
+	ssh -t $(TARGET_USER)@$(TARGET_IP) "sudo mv $(TARGET_DIR)mycom /usr/local/bin/mycom"
+	ssh -t $(TARGET_USER)@$(TARGET_IP) "sudo mv $(TARGET_DIR)mycom.service /etc/systemd/system/"
+	ssh -t $(TARGET_USER)@$(TARGET_IP) "sudo systemctl daemon-reload"
+	ssh -t $(TARGET_USER)@$(TARGET_IP) "sudo systemctl enable mycom.service"          
 	
 deploy: mycom
 	scp mycom $(TARGET_USER)@$(TARGET_IP):$(TARGET_DIR)
