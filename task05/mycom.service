@@ -1,0 +1,11 @@
+[Unit] 
+Description=my service
+After=multi-user.target
+
+[Service] 
+ExecStart=/usr/local/bin/mycom /dev/ttyAMA0
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
