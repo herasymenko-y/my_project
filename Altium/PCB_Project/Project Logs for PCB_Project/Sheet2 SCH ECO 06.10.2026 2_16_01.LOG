@@ -1,0 +1,5 @@
+Remove Pin=J4-3 From Net=GND2
+Remove Pin=P1-1 From Net=GND5
+Add Pin To Net: Pin=J4-6 Old Net=GND6 New Net=GND5
+Add Pin To Net: Pin=P1-1 Old Net=GND5 New Net=GND6
+Change Pin Designator/Name:  Old Designator=J4-6 Old Name=ADO New Designator =GND New Name=3

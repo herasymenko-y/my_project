@@ -1,0 +1,4 @@
+Remove Pin=J3-4 From Net=GND5
+Remove Pin=J4-7 From Net=VCC2
+Add Pin To Net: Pin=J3-4 Old Net=GND5 New Net=GND6
+Add Pin To Net: Pin=J4-7 Old Net=VCC2 New Net=VCC1

@@ -1,0 +1,156 @@
+Added Component: Designator=J2(SPI)
+Add component (AddParameter): Name = "Availability"; Value = "Unavailable"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "530470810"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=J3(Traffic light)
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/22035045/Molex/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Molex"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "22035045"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/22035045/Molex/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=J4(ENS160+AHT21)
+Add component (AddParameter): Name = "Availability"; Value = "Unavailable"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "530470810"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=P1(BUZZER)
+Add component (AddParameter): Name = "Availability"; Value = "In Stock"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/53047-0310/Molex/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Molex"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "53047-0310"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/53047-0310/Molex/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=P2(Button)
+Add component (AddParameter): Name = "Availability"; Value = "In Stock"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/53047-0310/Molex/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Molex"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "53047-0310"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/53047-0310/Molex/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=P3(SR505)
+Add component (AddParameter): Name = "Availability"; Value = "In Stock"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/53047-0310/Molex/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Molex"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "53047-0310"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/53047-0310/Molex/view-part/?ref=snap"; VariantName = "[No Variations]"
+Added Component: Designator=P4(Button2)
+Add component (AddParameter): Name = "Availability"; Value = "In Stock"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/53047-0310/Molex/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Molex"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "53047-0310"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/53047-0310/Molex/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=P5(61304021121)
+Add component (AddParameter): Name = "Color"; Value = "Black"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Connector Type"; Value = "Male Pin"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Material"; Value = "Gold"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Mating Length"; Value = "5.9944mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Plating"; Value = "Gold"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Resistance"; Value = "20m?"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Current Rating"; Value = "3A"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Gender"; Value = "Male"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Height"; Value = "8.89mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Lead Pitch"; Value = "2.54mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Max Operating Temperature"; Value = "105°C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Min Operating Temperature"; Value = "-40°C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mount"; Value = "Through Hole"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Contacts"; Value = "40"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Pins"; Value = "40"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Positions"; Value = "40"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Rows"; Value = "2"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Operating Supply Voltage"; Value = "250V"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Orientation"; Value = "Vertical"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Packaging"; Value = "Bulk"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Pitch"; Value = "2.54mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "RoHS"; Value = "Compliant"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Row Spacing"; Value = "2.54mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Termination"; Value = "Solder"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Voltage Rating"; Value = "250V"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=BUZZER(L/O) Pin=P1-2
+Added Pin To Net: NetName=BUZZER(L/O) Pin=P5-11
+Added Net: Name=BUZZER(L/O)
+Added Pin To Net: NetName=GND1 Pin=P4-44
+Added Pin To Net: NetName=GND1 Pin=P5-6
+Added Net: Name=GND1
+Added Pin To Net: NetName=GND2 Pin=P2-41
+Added Pin To Net: NetName=GND2 Pin=P5-14
+Added Net: Name=GND2
+Added Pin To Net: NetName=GND3 Pin=P3-1
+Added Pin To Net: NetName=GND3 Pin=P5-20
+Added Net: Name=GND3
+Added Pin To Net: NetName=GND4 Pin=P1-1
+Added Pin To Net: NetName=GND4 Pin=P5-30
+Added Net: Name=GND4
+Added Pin To Net: NetName=GND5 Pin=J2-6
+Added Pin To Net: NetName=GND5 Pin=J4-6
+Added Pin To Net: NetName=GND5 Pin=P5-34
+Added Net: Name=GND5
+Added Pin To Net: NetName=GND6 Pin=J3-4
+Added Pin To Net: NetName=GND6 Pin=J4-3
+Added Pin To Net: NetName=GND6 Pin=P5-39
+Added Net: Name=GND6
+Added Pin To Net: NetName=I2C(INT) Pin=J4-8
+Added Pin To Net: NetName=I2C(INT) Pin=P5-15
+Added Net: Name=I2C(INT)
+Added Pin To Net: NetName=I2C(SCL) Pin=J4-4
+Added Pin To Net: NetName=I2C(SCL) Pin=P5-5
+Added Net: Name=I2C(SCL)
+Added Pin To Net: NetName=I2C(SDA) Pin=J4-5
+Added Pin To Net: NetName=I2C(SDA) Pin=P5-3
+Added Net: Name=I2C(SDA)
+Added Pin To Net: NetName=P2(S) Pin=P2-42
+Added Pin To Net: NetName=P2(S) Pin=P5-29
+Added Net: Name=P2(S)
+Added Pin To Net: NetName=P3(OUT) Pin=P3-2
+Added Pin To Net: NetName=P3(OUT) Pin=P5-13
+Added Net: Name=P3(OUT)
+Added Pin To Net: NetName=P4(S) Pin=P4-45
+Added Pin To Net: NetName=P4(S) Pin=P5-31
+Added Net: Name=P4(S)
+Added Pin To Net: NetName=SPI(IRQ) Pin=J2-5
+Added Pin To Net: NetName=SPI(IRQ) Pin=P5-18
+Added Net: Name=SPI(IRQ)
+Added Pin To Net: NetName=SPI(MISO) Pin=J2-4
+Added Pin To Net: NetName=SPI(MISO) Pin=P5-21
+Added Net: Name=SPI(MISO)
+Added Pin To Net: NetName=SPI(MOSI) Pin=J2-3
+Added Pin To Net: NetName=SPI(MOSI) Pin=P5-19
+Added Net: Name=SPI(MOSI)
+Added Pin To Net: NetName=SPI(RST) Pin=J2-7
+Added Pin To Net: NetName=SPI(RST) Pin=P5-22
+Added Net: Name=SPI(RST)
+Added Pin To Net: NetName=SPI(SCK) Pin=J2-2
+Added Pin To Net: NetName=SPI(SCK) Pin=P5-23
+Added Net: Name=SPI(SCK)
+Added Pin To Net: NetName=SPI(SDA) Pin=J2-1
+Added Pin To Net: NetName=SPI(SDA) Pin=P5-24
+Added Net: Name=SPI(SDA)
+Added Pin To Net: NetName=VCC1 Pin=J2-8
+Added Pin To Net: NetName=VCC1 Pin=J4-2
+Added Pin To Net: NetName=VCC1 Pin=P1-3
+Added Pin To Net: NetName=VCC1 Pin=P2-43
+Added Pin To Net: NetName=VCC1 Pin=P5-1
+Added Net: Name=VCC1
+Added Pin To Net: NetName=VCC2 Pin=J3-1
+Added Pin To Net: NetName=VCC2 Pin=J3-2
+Added Pin To Net: NetName=VCC2 Pin=J3-3
+Added Pin To Net: NetName=VCC2 Pin=J4-7
+Added Pin To Net: NetName=VCC2 Pin=P3-3
+Added Pin To Net: NetName=VCC2 Pin=P4-46
+Added Pin To Net: NetName=VCC2 Pin=P5-17
+Added Net: Name=VCC2
+Added Class: Name=Sheet2

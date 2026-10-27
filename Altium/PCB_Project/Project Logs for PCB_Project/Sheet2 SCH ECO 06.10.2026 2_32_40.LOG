@@ -1,0 +1,3 @@
+Remove Pin=P3-1 From Net=GND5
+Change Pin Designator/Name:  Old Designator=P5-31 Old Name=31 New Designator =37 New Name=37
+Change Pin Designator/Name:  Old Designator=P5-37 Old Name=37 New Designator =31 New Name=31

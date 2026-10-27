@@ -1,0 +1,6 @@
+Removed Pin From Net: NetName=P3(OUT) Pin=P5-11
+Removed Pin From Net: NetName=SPI(IRQ) Pin=P5-18
+Removed Pin From Net: NetName=BUZZER(L/O) Pin=P5-31
+Added Pin To Net: NetName=SPI(IRQ) Pin=P5-11
+Added Pin To Net: NetName=P3(OUT) Pin=P5-18
+Added Pin To Net: NetName=BUZZER(L/O) Pin=P5-37

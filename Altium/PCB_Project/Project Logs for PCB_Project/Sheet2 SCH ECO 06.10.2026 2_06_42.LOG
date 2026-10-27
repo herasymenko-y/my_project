@@ -1,0 +1,4 @@
+Remove Pin=J2-8 From Net=VCC2
+Add Pin To Net: Pin=J2-8 Old Net=VCC2 New Net=VCC1
+Change Pin Designator/Name:  Old Designator=P5-11 Old Name=11 New Designator =18 New Name=18
+Change Pin Designator/Name:  Old Designator=P5-18 Old Name=18 New Designator =11 New Name=11
